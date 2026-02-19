@@ -58,26 +58,58 @@ class Solver:
         self.clip_timer = Accumulator()
 
     def set_point_cloud(self, points_in_world_frame, points_colors, name, point_size):
-        self.viewer.server.scene.add_point_cloud(
-            name="pcd_"+name,
+        pcd_name = "pcd_"+name
+        handle = self.viewer.server.scene.add_point_cloud(
+            name=pcd_name,
             points=points_in_world_frame,
             colors=points_colors,
             point_size=point_size,
             point_shape="circle",
+            precision="float32",
         )
+        self.viewer.point_cloud_handles[pcd_name] = handle
 
     def set_submap_point_cloud(self, submap):
         # Add the point cloud to the visualization.
-        points_in_world_frame = submap.get_points_in_world_frame(self.graph)
-        points_colors = submap.get_points_colors()
-        name = str(submap.get_id())
-        self.set_point_cloud(points_in_world_frame, points_colors, name, 0.001)
+        try:
+            points_in_world_frame = submap.get_points_in_world_frame(self.graph)
+            points_colors = submap.get_points_colors()
+            if points_in_world_frame is None or len(points_in_world_frame) == 0:
+                print(f"[Viewer] WARNING: submap {submap.get_id()} has no points after confidence filtering")
+                return
+            # Filter out NaN/inf points
+            valid = np.isfinite(points_in_world_frame).all(axis=1)
+            if not valid.all():
+                print(f"[Viewer] WARNING: submap {submap.get_id()} has {(~valid).sum()} NaN/inf points, filtering")
+                points_in_world_frame = points_in_world_frame[valid]
+                points_colors = points_colors[valid]
+            # Downsample if too many points (WebGL performance)
+            max_pts = int(self.viewer.gui_max_points.value)
+            n = len(points_in_world_frame)
+            if n > max_pts:
+                idx = np.random.choice(n, max_pts, replace=False)
+                idx.sort()  # keep spatial coherence
+                points_in_world_frame = points_in_world_frame[idx]
+                points_colors = points_colors[idx]
+                print(f"[Viewer] Downsampled submap {submap.get_id()}: {n} -> {max_pts} points")
+            name = str(submap.get_id())
+            print(f"[Viewer] Adding point cloud for submap {name}: {len(points_in_world_frame)} points, "
+                  f"range=[{points_in_world_frame.min():.2f}, {points_in_world_frame.max():.2f}]")
+            self.set_point_cloud(points_in_world_frame, points_colors, name, 0.002)
+        except Exception as e:
+            print(f"[Viewer] ERROR in set_submap_point_cloud for submap {submap.get_id()}: {e}")
+            import traceback; traceback.print_exc()
 
     def set_submap_poses(self, submap):
         # Add the camera poses to the visualization.
-        extrinsics = submap.get_all_poses_world(self.graph)
-        images = submap.get_all_frames()
-        self.viewer.visualize_frames(extrinsics, images, submap.get_id())
+        try:
+            extrinsics = submap.get_all_poses_world(self.graph)
+            images = submap.get_all_frames()
+            print(f"[Viewer] Visualizing {extrinsics.shape[0]} camera poses for submap {submap.get_id()}")
+            self.viewer.visualize_frames(extrinsics, images, submap.get_id())
+        except Exception as e:
+            print(f"[Viewer] ERROR in set_submap_poses for submap {submap.get_id()}: {e}")
+            import traceback; traceback.print_exc()
 
     def update_all_submap_vis(self):
         for submap in self.map.get_submaps():

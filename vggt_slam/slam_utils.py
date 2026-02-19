@@ -79,6 +79,10 @@ def decompose_camera(P, no_inverse=False):
     else:
         t = np.linalg.inv(K) @ P[:, 3]
     K = K / scale
+
+    # Ensure R is a proper rotation (det = +1), not a reflection
+    if np.linalg.det(R) < 0:
+        R = -R
     
     return K, R, t, scale
 

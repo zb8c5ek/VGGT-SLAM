@@ -133,6 +133,7 @@ class GraphMap:
 
     def write_poses_to_file(self, file_name, graph, give_camera_mat=False, kitti_format=False):
         all_poses = self.get_all_cam_matricies(give_camera_mat=True, graph=graph)
+        os.makedirs(os.path.dirname(file_name), exist_ok=True)
         with open(file_name, "w") as f:
 
             if self.rectifying_H_mats:

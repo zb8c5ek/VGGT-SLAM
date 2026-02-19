@@ -1,5 +1,5 @@
-torch==2.3.1
-torchvision==0.18.1
+torch
+torchvision
 numpy
 Pillow
 open3d
@@ -10,7 +10,7 @@ pytorch_metric_learning
 pytorch-lightning
 termcolor
 gradio
-viser==0.2.23
+# viser==0.2.23
 tqdm
 omegaconf
 opencv-python
@@ -20,6 +20,6 @@ trimesh
 matplotlib
 virtualenv>=20.10.0
 lz4
-gtsam-develop
+# gtsam-develop  # No Windows wheels; build from source: 3rdParty/gtsam-develop
 ftfy 
 regex 

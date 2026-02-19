@@ -118,11 +118,11 @@ def main():
                 solver.graph.optimize()
 
             loop_closure_detected = len(predictions["detected_loops"]) > 0
-            if args.vis_map:
-                if loop_closure_detected:
-                    solver.update_all_submap_vis()
-                else:
-                    solver.update_latest_submap_vis()
+            # Always update visualization progressively
+            if loop_closure_detected:
+                solver.update_all_submap_vis()
+            else:
+                solver.update_latest_submap_vis()
             
             # Reset for next submap.
             image_names_subset = image_names_subset[-args.overlapping_window_size:]
@@ -203,6 +203,15 @@ def main():
         if not args.skip_dense_log:
             # Log the dense point cloud for each submap.
             solver.map.save_framewise_pointclouds(solver.graph, args.log_path.replace(".txt", "_logs"))
+
+    # Keep the viser server alive so the user can inspect the 3D scene
+    print("\n=== Viser viewer ready at http://localhost:8080 ===")
+    print("Press Ctrl+C to exit.")
+    try:
+        while True:
+            time.sleep(1.0)
+    except KeyboardInterrupt:
+        print("Shutting down.")
 
 
 if __name__ == "__main__":

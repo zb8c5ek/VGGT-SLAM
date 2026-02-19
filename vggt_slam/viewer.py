@@ -11,9 +11,25 @@ class Viewer:
         print(f"Starting viser server on port {port}")
 
         self.server = viser.ViserServer(host="0.0.0.0", port=port)
-        self.server.gui.configure_theme(titlebar_content=None, control_layout="collapsible")
+        self.server.gui.configure_theme(
+            titlebar_content=None,
+            control_layout="collapsible",
+            dark_mode=True,
+        )
+        # Better lighting for point clouds
+        self.server.scene.configure_default_lights(enabled=True, cast_shadow=True)
+        self.server.scene.set_up_direction("-y")
 
         # --- GUI Elements ---
+        self.gui_point_size = self.server.gui.add_slider(
+            "Point Size", min=0.0005, max=0.02, step=0.0005, initial_value=0.002
+        )
+        self.gui_point_size.on_update(self._on_update_point_size)
+
+        self.gui_max_points = self.server.gui.add_slider(
+            "Max Points / Submap", min=5000, max=200000, step=5000, initial_value=50000
+        )
+
         self.gui_show_frames = self.server.gui.add_checkbox("Show Cameras", initial_value=True)
         self.gui_show_frames.on_update(self._on_update_show_frames)
 
@@ -23,6 +39,7 @@ class Viewer:
 
         self.submap_frames: Dict[int, List[viser.FrameHandle]] = {}
         self.submap_frustums: Dict[int, List[viser.CameraFrustumHandle]] = {}
+        self.point_cloud_handles: Dict[str, viser.PointCloudHandle] = {}
 
         num_rand_colors = 250
         np.random.seed(100)
@@ -33,12 +50,16 @@ class Viewer:
     def visualize_frames(self, extrinsics: np.ndarray, images_: np.ndarray, submap_id: int) -> None:
         """
         Add camera frames and frustums to the scene for a specific submap.
-        extrinsics: (S, 3, 4)
+        extrinsics: (S, 4, 4) cam2world matrices
         images_:    (S, 3, H, W)
         """
 
         if isinstance(images_, torch.Tensor):
             images_ = images_.cpu().numpy()
+
+        if not np.isfinite(extrinsics).all():
+            print(f"[Viewer] WARNING: submap {submap_id} extrinsics contain NaN/inf, skipping frame visualization")
+            return
 
         if submap_id not in self.submap_frames:
             next_id = len(self.submap_id_to_color) + 1
@@ -77,9 +98,11 @@ class Viewer:
                 frustum_name,
                 fov=fov,
                 aspect=w / h,
-                scale=0.05,
+                scale=0.07,
                 image=img,
-                line_width=3.0,
+                format="jpeg",
+                jpeg_quality=95,
+                line_width=2.0,
                 color=self.random_colors[self.submap_id_to_color[submap_id]]
             )
             frustum.visible = self.gui_show_frames.value
@@ -94,6 +117,12 @@ class Viewer:
         for frustums in self.submap_frustums.values():
             for fr in frustums:
                 fr.visible = visible
+
+    def _on_update_point_size(self, _) -> None:
+        """Update point size for all point clouds."""
+        new_size = self.gui_point_size.value
+        for handle in self.point_cloud_handles.values():
+            handle.point_size = new_size
 
     def visualize_obb(
         self,

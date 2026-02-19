@@ -8,6 +8,9 @@ perception_models/
 sam3/
 third_party/
 
+# Ignore 3rdParty build artifacts (keep source for self-contained repo)
+3rdParty/gtsam-develop/build/
+
 # Ignore setup files from VSCode and Pycharm
 .vscode/
 .idea/
