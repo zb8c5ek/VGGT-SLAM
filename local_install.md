@@ -55,12 +55,12 @@ we build it from source below.
 
 ## 4. Install Third-Party Python Packages
 
-`third_party/vggt` and `third_party/salad` are integrated directly into this
+`3rdParty/vggt` and `3rdParty/salad` are integrated directly into this
 repo (no git submodules). They have been patched for NumPy 2.x compatibility.
 
 ```bash
-pip install -e third_party/salad
-pip install --no-deps -e third_party/vggt
+pip install -e 3rdParty/salad
+pip install --no-deps -e 3rdParty/vggt
 ```
 
 > `--no-deps` for vggt avoids redundant dependency resolution; all deps

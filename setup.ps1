@@ -52,8 +52,8 @@ Write-Step "Installing base requirements (requirements.txt)"
 pip install --no-input -r (Join-Path $repoRoot 'requirements.txt')
 if ($LASTEXITCODE -ne 0) { throw "pip install requirements.txt failed (exit code $LASTEXITCODE)." }
 
-# ── 2. Prepare third_party directory ─────────────────────────────────
-$thirdParty = Join-Path $repoRoot 'third_party'
+# ── 2. Prepare 3rdParty directory ────────────────────────────────────
+$thirdParty = Join-Path $repoRoot '3rdParty'
 if (-not (Test-Path $thirdParty)) { New-Item -ItemType Directory -Path $thirdParty | Out-Null }
 
 # ── 3. Clone and install Salad ───────────────────────────────────────
