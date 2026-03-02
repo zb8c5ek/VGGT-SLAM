@@ -1,5 +1,6 @@
-torch
-torchvision
+# torch and torchvision are installed separately with CUDA support:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+# Adjust cu126 to match your local CUDA version (e.g. cu118, cu121, cu124, cu128).
 numpy
 Pillow
 open3d
@@ -10,7 +11,7 @@ pytorch_metric_learning
 pytorch-lightning
 termcolor
 gradio
-# viser==0.2.23
+viser
 tqdm
 omegaconf
 opencv-python

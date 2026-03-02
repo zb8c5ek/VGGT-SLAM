@@ -1,0 +1,27 @@
+# Test config — episode_001 multi-camera data (RUN_20260226)
+paths:
+  data_root: "D:/_DataBuffer/RUN_20260226_003550-Middle_yet_Work_at_the_End/VO-EPISODING_20260226_003553/episode_001_full_t0000-0040"
+
+input:
+  primary_cam: "cam0"
+  cameras: ["cam0"]
+  camera_angles:
+    cam0: ["p+0_y+30_r+0", "p-30_y+0_r+0", "p+30_y+0_r+0"]
+    # cam1: ["p+0_y-30_r+0", "p-30_y+0_r+0"]
+
+slam:
+  submap_size: 12
+  overlapping_window_size: 1
+  max_loops: 1
+  min_disparity: 50
+  conf_threshold: 90.0
+  lc_thres: 0.95
+
+output:
+  vis_map: true
+  vis_voxel_size: null
+  vis_flow: false
+  log_results: false
+  skip_dense_log: false
+  log_path: "poses_multicam.txt"
+  colmap_output_path: "_output_colmap"

@@ -1,0 +1,36 @@
+# ═══════════════════════════════════════════════════════════════════════
+# VGGT-SLAM Multi-Camera Configuration Template
+# ═══════════════════════════════════════════════════════════════════════
+#
+# Copy this file, fill in your paths and camera selections, then run:
+#   python BURNPIPE_VGGT_SLAM.py  <your_config.yaml>
+#
+# All fields with "CHANGE_ME" must be updated before running.
+
+paths:
+  data_root: "D:/_DataBuffer/CHANGE_ME"  # root containing group_*/cam*/ or ep*/images/
+
+input:
+  primary_cam: "cam0"       # camera prefix used for keyframe selection
+  cameras: null             # null = all discovered; or list: [cam0, cam1]
+  camera_angles: null       # null = all angles for every camera; or per-camera dict:
+  #   cam0: [p+0_y+0_r+0, p+0_y+30_r+0, p-30_y+0_r+0, p+30_y+0_r+0]
+  #   cam1: [p+0_y+0_r+0, p-30_y+0_r+0, p+0_y-30_r+0, p+30_y+0_r+0]
+  # Cameras in `cameras` but not in `camera_angles` accept all angles.
+
+slam:
+  submap_size: 4            # keyframe timestamps per submap
+  overlapping_window_size: 1
+  max_loops: 1              # max loop closures per submap (0 = disable)
+  min_disparity: 50         # mean pixel displacement to trigger keyframe
+  conf_threshold: 90.0      # percentile cutoff: discard points below this confidence percentile (90 = keep top 10%)
+  lc_thres: 0.95            # image retrieval similarity threshold [0, 1]
+
+output:
+  vis_map: true             # progressive visualisation during processing
+  vis_voxel_size: null      # voxel downsampling for viewer (null = off)
+  vis_flow: false           # show optical flow debug window
+  log_results: false        # write pose file after completion
+  skip_dense_log: false     # skip per-submap dense point cloud export
+  log_path: "poses_multicam.txt"
+  colmap_output_path: null  # null = skip; or path to write COLMAP txt (cameras/images/points3D)
