@@ -87,18 +87,10 @@ The `gtsam-develop` branch is required for `SL4`, `PriorFactorSL4`, and
 
 ### 6.1 Source Location
 
-The patched GTSAM develop source tree is already included at
-`3rdParty/gtsam-develop/`. All Windows-specific patches listed below have
-been pre-applied — you do **not** need to clone or patch anything.
-
-If you need a fresh copy:
-
-```bash
-cd 3rdParty
-git clone -b develop https://github.com/borglab/gtsam.git gtsam-develop
-cd gtsam-develop
-# Then apply the patches in 6.2 below
-```
+The **complete** patched GTSAM develop source tree is included at
+`3rdParty/gtsam-develop/` (including the `gtsam/` core library).
+All Windows-specific patches listed below have been pre-applied —
+you do **not** need to clone or patch anything.
 
 ### 6.2 Apply Windows-specific patches
 
