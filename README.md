@@ -60,14 +60,22 @@ conda create -n vggt-slam python=3.11
 conda activate vggt-slam
 ```
 
-### Make the setup script executable and run it
-This step will automatically download all 3rd party packages including Perception Encoder, SAM 3, and our fork of VGGT. More details on the license for Perception Encoder 
+### Run the setup script
+This step will automatically download all 3rd party packages including Perception Encoder, SAM 3, and our fork of VGGT. More details on the license for Perception Encoder
 can be found [here](https://github.com/facebookresearch/perception_models/blob/main/LICENSE.PE), for SAM3 can be found [here](https://github.com/facebookresearch/sam3/blob/main/LICENSE), and for VGGT can be found [here](https://github.com/facebookresearch/vggt/blob/main/LICENSE.txt). Note that we only use SAM 3 and Perception Encoder for optional open-set 3D object detection.
 
+**Linux / macOS:**
 ```
 chmod +x setup.sh
 ./setup.sh
 ```
+
+**Windows (PowerShell):**
+```powershell
+.\setup.ps1
+```
+
+> For a full Windows walkthrough (GTSAM build, CUDA, troubleshooting) see [local_install.md](local_install.md).
 
 ---
 
