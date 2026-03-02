@@ -45,6 +45,9 @@ if %ERRORLEVEL% neq 0 (
     exit /b 1
 )
 
+:: ── Prepend sfm3rV2 env so Python, pybind11, Boost are found ──────
+set "PATH=D:\MICROMAMBA\envs\sfm3rV2;D:\MICROMAMBA\envs\sfm3rV2\Scripts;D:\MICROMAMBA\envs\sfm3rV2\Library\bin;%PATH%"
+
 :: ── Set UTF-8 codepage ─────────────────────────────────────────────
 chcp 65001 >nul 2>&1
 
