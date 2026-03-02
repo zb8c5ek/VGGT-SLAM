@@ -149,8 +149,11 @@ def Point3(x=float('nan'), y=float('nan'), z=float('nan')):
 Open a terminal that has both MSVC and your Python env on `PATH`:
 
 ```bat
-@rem Activate VS2022 Build Tools
-call "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
+@rem Activate VS Build Tools (auto-detect location)
+@rem The build script build_gtsam.bat does this automatically.
+@rem If running manually, find vcvars64.bat:
+@rem   vswhere -latest -products * -property installationPath
+@rem Then call: <install_path>\VC\Auxiliary\Build\vcvars64.bat
 
 @rem Activate conda/micromamba env (ensure python, pybind11, boost are visible)
 @rem e.g.  micromamba activate sfm3r
@@ -175,7 +178,8 @@ cmake --build . --config Release -j8
 
 Build takes ~5-10 minutes. All 256 targets should succeed.
 
-A convenience batch script is also provided:
+A convenience batch script is also provided (auto-detects VS Build Tools
+location and uses paths relative to the script — works on any machine):
 
 ```bat
 3rdParty\gtsam-develop\build_gtsam.bat
